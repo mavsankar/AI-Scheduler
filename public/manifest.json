@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "AI Scheduler",
+  "name": "AI Helper to Schedule Day to Day Activities",
   "icons": [
     {
       "src": "favicon.ico",
