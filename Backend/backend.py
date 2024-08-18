@@ -110,6 +110,11 @@ chat_session = model.start_chat(
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+# Add a health check endpoint
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"})
+
 @app.route('/schedule', methods=['POST'])
 def post_endpoint():
     data = request.get_json()
