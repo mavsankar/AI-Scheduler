@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, CssBaseline } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import HomePage from './components/HomePage/HomePage';
 import InputForm from './components/InputForm/InputForm';
 import OutputScreen from './components/OutputScreen/OutputScreen';
 import Loader from './components/Helpers/Loader';
@@ -9,8 +10,6 @@ import './App.css';
 function App() {
   const [schedule, setSchedule] = useState(null);
   const [outputLoading, setOutputLoading] = useState(false);
-  
-  // Define navigate using the useNavigate hook
   const navigate = useNavigate();
 
   const handleFormSubmit = (values) => {
@@ -25,7 +24,7 @@ function App() {
       .then(data => {
         setSchedule(data.weekly_schedule);
         setOutputLoading(false);
-        navigateToOutput();
+        navigate('/output');
       })
       .catch((error) => {
         setOutputLoading(false);
@@ -33,19 +32,28 @@ function App() {
       });
   };
 
-  const navigateToOutput = () => {
-    // Use navigate function to redirect to the OutputScreen route
+  const handleFileUpload = (scheduleData) => {
+    setSchedule(scheduleData);
     navigate('/output');
   };
 
   return (
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route
-          path="/"
+          path="/create"
           element={
             <Container>
               <InputForm onSubmit={handleFormSubmit} isLoading={outputLoading} />
               {outputLoading && <div className='loader-container'> <Loader /> </div>}
+            </Container>
+          }
+        />
+        <Route
+          path="/view"
+          element={
+            <Container>
+              <OutputScreen weeklySchedule={schedule} onFileUpload={handleFileUpload} />
             </Container>
           }
         />
