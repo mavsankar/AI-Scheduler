@@ -182,15 +182,34 @@ const OutputScreen = ({ weeklySchedule }) => {
 
   // Function to export the schedule as an image
   const exportToImage = () => {
-    const tableElement = document.getElementById('schedule-table'); // Reference to the table element
+    const tableElement = document.getElementById('schedule-table');
+    const tableContainer = tableElement.querySelector('.MuiTableContainer-root'); // Get the TableContainer element
 
-    html2canvas(tableElement).then(canvas => {
+    // Save original styles
+    const originalOverflow = tableContainer.style.overflow;
+    const originalHeight = tableContainer.style.height;
+
+    // Set the styles to show all content
+    tableContainer.style.overflow = 'visible';
+    tableContainer.style.height = 'auto';
+
+    // Use html2canvas to capture the entire table, including previously scrollable content
+    html2canvas(tableElement, {
+      scale: 2, // Adjust scale for better resolution
+      useCORS: true, // Enable cross-origin images
+    }).then(canvas => {
+      // Restore original styles
+      tableContainer.style.overflow = originalOverflow;
+      tableContainer.style.height = originalHeight;
+
+      // Create a download link
       const link = document.createElement('a');
       link.download = 'Weekly_Schedule.png';
       link.href = canvas.toDataURL();
       link.click();
     });
   };
+
 
   // Proceed with rendering the schedule as before
   const allGoals = schedule.days.flatMap(day => day.schedule.map(item => item.goal));
@@ -209,7 +228,7 @@ const OutputScreen = ({ weeklySchedule }) => {
         variant="contained"
         color="secondary"
         onClick={() => activeCellRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-        style={{ marginBottom: '16px' }}
+        style={{ margin: '16px' }}
       >
         Go to Current Activity
       </Button>
@@ -220,7 +239,7 @@ const OutputScreen = ({ weeklySchedule }) => {
         variant="contained"
         color="primary"
         onClick={() => exportToExcel(schedule, timeSlots, goalColors)}
-        style={{ marginBottom: '16px' }}
+        style={{ margin: '16px' }}
       >
         Download as Excel
       </Button>
@@ -228,7 +247,7 @@ const OutputScreen = ({ weeklySchedule }) => {
         variant="contained"
         color="primary"
         onClick={() => exportToImage()}
-        style={{ marginBottom: '16px', marginLeft: '16px' }}
+        style={{ margin: '16px' }}
       >
         Download as Image
       </Button>

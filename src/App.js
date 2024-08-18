@@ -52,9 +52,7 @@ function App() {
         <Route
           path="/view"
           element={
-            <Container>
               <OutputScreen weeklySchedule={schedule} onFileUpload={handleFileUpload} />
-            </Container>
           }
         />
         <Route
