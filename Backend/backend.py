@@ -4,6 +4,7 @@ import json
 import google.generativeai as genai
 from google.ai.generativelanguage_v1beta.types import content
 import os
+from waitress import serve
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
@@ -123,9 +124,4 @@ def post_endpoint():
     return response.text
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
-
-
-
-
-
+    serve(app, host="0.0.0.0", port=5000)
