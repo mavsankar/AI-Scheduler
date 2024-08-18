@@ -1,0 +1,21 @@
+/* Add this to your CSS file */
+
+@keyframes blink {
+    0% {
+        color: green;
+    }
+
+    50% {
+        color: red;
+    }
+
+    100% {
+        color: green;
+    }
+}
+
+/* This class will apply the blinking border */
+.blinking {
+    animation: blink 1s infinite;
+    text-decoration: underline;
+}
