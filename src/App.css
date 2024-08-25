@@ -2,6 +2,7 @@
 .loader-container {
   display: flex;
   justify-content: center;
+  text-align: center;
   align-items: center;
-  height: 30vh; /* Adjust as needed */
+  height: 100vh; /* Set the height to 100% of the viewport height */
 }

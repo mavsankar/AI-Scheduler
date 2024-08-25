@@ -1,12 +1,23 @@
 // src/components/InputForm.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { Button, TextField, MenuItem, Grid, InputAdornment, Typography, Box } from '@mui/material';
-
+import './InputForm.css';
 const InputForm = ({ onSubmit, isLoading }) => {
+    const [availableSchedules, setAvailableSchedules] = useState([]);
+    const [selectedSchedule, setSelectedSchedule] = useState(null);
 
-    const initialValues = {
+    useEffect(() => {
+        // Retrieve all keys from localStorage to find available schedules
+        const schedules = JSON.parse(localStorage.getItem('weeklyScheduleForm'));
+        if (schedules) {
+            setAvailableSchedules(schedules);
+        }
+    }, []);
+
+    let initialValues = selectedSchedule ?? {
+        schedule_name: '',
         personal_information: {
             name: '',
             age: '',
@@ -33,17 +44,12 @@ const InputForm = ({ onSubmit, isLoading }) => {
             },
         },
         preferences: {
-            breaks: {
-                frequency: '',
-                duration: '',
-            },
-            activity_variety: '',
-            social_time: '',
-            personal_time: '',
+            activity_variety: 'medium'
         },
     };
 
     const validationSchema = Yup.object({
+        schedule_name: Yup.string().required('Required'),
         personal_information: Yup.object({
             name: Yup.string().required('Required'),
             age: Yup.number().min(0, 'Must be 0 or more').required('Required'),
@@ -59,11 +65,7 @@ const InputForm = ({ onSubmit, isLoading }) => {
                 goal_name: Yup.string().required('Required'),
                 goal_type: Yup.string().required('Required'),
                 deadline: Yup.string().required('Required'),
-                priority_level: Yup.string().oneOf(['high', 'medium', 'low']).required('Required'),
-                time_commitment: Yup.object({
-                    duration: Yup.number().required('Required'),
-                    unit: Yup.string().oneOf(['minutes', 'hours']).required('Required'),
-                }).required('Required'),
+                priority_level: Yup.string().oneOf(['high', 'medium', 'low']).required('Required')
             })
         ),
         tasks: Yup.array().of(
@@ -93,63 +95,75 @@ const InputForm = ({ onSubmit, isLoading }) => {
             }).required('Required'),
         }).required('Required'),
         preferences: Yup.object({
-            breaks: Yup.object({
-                frequency: Yup.object({
-                    interval: Yup.number(),
-                    unit: Yup.string().oneOf(['minutes', 'hours']),
-                }),
-                duration: Yup.object({
-                    duration: Yup.number(),
-                    unit: Yup.string().oneOf(['minutes']),
-                }),
-            }).default({ frequency: { interval: 0, unit: 'minutes' }, duration: { duration: 0, unit: 'minutes' } }),
             activity_variety: Yup.string().oneOf(['high', 'medium', 'low']),
-            social_time: Yup.object({
-                duration: Yup.number(),
-                unit: Yup.string().oneOf(['minutes', 'hours']),
-            }).default({ duration: 0, unit: 'minutes' }),
-            personal_time: Yup.object({
-                duration: Yup.number(),
-                unit: Yup.string().oneOf(['minutes', 'hours']),
-            }).default({ duration: 0, unit: 'minutes' }),
+
         }),
     });
+
+    const handleScheduleChange = (event) => {
+        if (event.target.value === '') {
+            setSelectedSchedule(null);
+        }
+        else {
+            setSelectedSchedule(event.target.value);
+        }
+    };
 
     return (
         <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
+            enableReinitialize
             onSubmit={(values) => {
-                const formattedValues = {
-                    ...values,
-                    goals: values.goals.map(goal => ({
-                        ...goal,
-                        time_commitment: `${goal.time_commitment.duration} ${goal.time_commitment.unit} daily`,
-                    })),
-                    tasks: values.tasks.map(task => ({
-                        ...task,
-                        estimated_duration: `${task.estimated_duration.duration} ${task.estimated_duration.unit}`,
-                    })),
-                    preferences: {
-                        ...values.preferences,
-                        breaks: {
-                            ...values.preferences.breaks,
-                            frequency: `every ${values.preferences.breaks.frequency.interval} ${values.preferences.breaks.frequency.unit}`,
-                            duration: `${values.preferences.breaks.duration.duration} ${values.preferences.breaks.duration.unit}`,
-                        },
-                        social_time: `${values.preferences.social_time.duration} ${values.preferences.social_time.unit} daily`,
-                        personal_time: `${values.preferences.personal_time.duration} ${values.preferences.personal_time.unit} daily`,
-                    },
-                };
-                onSubmit(formattedValues);
+                onSubmit(values);
             }}
         >
             {({ errors, touched }) => (
-                <Form>
+                <Form >
                     <Box mb={4}>
-                        <Typography variant="h4" component="h2" gutterBottom>
+                        <Typography textAlign={'center'} variant="h2" component="h2" gutterBottom>
+                            Create/Update Schedule Preferences
+                        </Typography>
+                        <Typography variant="h5" component="h2" gutterBottom>
+                            Use Existing Schedule Preferences?
+                        </Typography>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    select
+                                    label="Select an Existing Schedule Preference"
+                                    value={selectedSchedule ?? ''}
+                                    onChange={handleScheduleChange}
+                                    fullWidth
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {availableSchedules.map((schedule) => (
+                                        <MenuItem key={schedule} value={schedule}>
+                                            {schedule.schedule_name}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                    <Box mb={4}>
+                        <Typography variant="h5" component="h2" gutterBottom>
                             Personal Information
                         </Typography>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} mb={2}>
+                                <Field
+                                    name="schedule_name"
+                                    as={TextField}
+                                    label="Schedule Name"
+                                    fullWidth
+                                    error={touched.schedule_name && !!errors.schedule_name}
+                                    helperText={touched.schedule_name && errors.schedule_name}
+                                />
+                            </Grid>
+                        </Grid>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <Field
@@ -198,7 +212,7 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                 <Field
                                     name="personal_information.current_lifestyle_habits.exercise"
                                     as={TextField}
-                                    label="Exercise"
+                                    label="Describe your current exercise situation (Optional)"
                                     fullWidth
                                     error={touched.personal_information?.current_lifestyle_habits?.exercise && !!errors.personal_information?.current_lifestyle_habits?.exercise}
                                     helperText={touched.personal_information?.current_lifestyle_habits?.exercise && errors.personal_information?.current_lifestyle_habits?.exercise}
@@ -208,7 +222,7 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                 <Field
                                     name="personal_information.current_lifestyle_habits.diet"
                                     as={TextField}
-                                    label="Diet"
+                                    label="Describe your current diet situation (Optional)"
                                     fullWidth
                                     error={touched.personal_information?.current_lifestyle_habits?.diet && !!errors.personal_information?.current_lifestyle_habits?.diet}
                                     helperText={touched.personal_information?.current_lifestyle_habits?.diet && errors.personal_information?.current_lifestyle_habits?.diet}
@@ -218,7 +232,7 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                 <Field
                                     name="personal_information.current_lifestyle_habits.sleep"
                                     as={TextField}
-                                    label="Sleep"
+                                    label="Describe your current sleep situation (Optional)"
                                     fullWidth
                                     error={touched.personal_information?.current_lifestyle_habits?.sleep && !!errors.personal_information?.current_lifestyle_habits?.sleep}
                                     helperText={touched.personal_information?.current_lifestyle_habits?.sleep && errors.personal_information?.current_lifestyle_habits?.sleep}
@@ -250,7 +264,7 @@ const InputForm = ({ onSubmit, isLoading }) => {
                     </Box>
 
                     <Box mb={4}>
-                        <Typography variant="h4" component="h2" gutterBottom>
+                        <Typography variant="h5" component="h2" gutterBottom>
                             Goals
                         </Typography>
                         <FieldArray
@@ -317,27 +331,6 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         <MenuItem value="low">Low</MenuItem>
                                                     </Field>
                                                 </Grid>
-                                                <Grid item xs={12} sm={6}>
-                                                    <Field
-                                                        name={`goals.${index}.time_commitment.duration`}
-                                                        as={TextField}
-                                                        label="Time Commitment"
-                                                        type="number"
-                                                        fullWidth
-                                                        error={touched.goals?.[index]?.time_commitment?.duration && !!errors.goals?.[index]?.time_commitment?.duration}
-                                                        helperText={touched.goals?.[index]?.time_commitment?.duration && errors.goals?.[index]?.time_commitment?.duration}
-                                                        InputProps={{
-                                                            endAdornment: (
-                                                                <InputAdornment position="end">
-                                                                    <Field as={TextField} select name={`goals.${index}.time_commitment.unit`}>
-                                                                        <MenuItem value="minutes">minutes</MenuItem>
-                                                                        <MenuItem value="hours">hours</MenuItem>
-                                                                    </Field>
-                                                                </InputAdornment>
-                                                            ),
-                                                        }}
-                                                    />
-                                                </Grid>
                                             </Grid>
                                             <Box mt={2}>
                                                 <Button onClick={() => arrayHelpers.remove(index)} color="secondary" variant="outlined">
@@ -355,7 +348,7 @@ const InputForm = ({ onSubmit, isLoading }) => {
                     </Box>
 
                     <Box mb={4}>
-                        <Typography variant="h4" component="h2" gutterBottom>
+                        <Typography variant="h5" component="h2" gutterBottom>
                             Tasks
                         </Typography>
                         <FieldArray
@@ -447,7 +440,7 @@ const InputForm = ({ onSubmit, isLoading }) => {
                     </Box>
 
                     <Box mb={4}>
-                        <Typography variant="h4" component="h2" gutterBottom>
+                        <Typography variant="h5" component="h2" gutterBottom>
                             Constraints
                         </Typography>
                         <Box mb={3}>
@@ -573,56 +566,10 @@ const InputForm = ({ onSubmit, isLoading }) => {
                     </Box>
 
                     <Box mb={4}>
-                        <Typography variant="h4" component="h2" gutterBottom>
+                        <Typography variant="h5" component="h2" gutterBottom>
                             Preferences
                         </Typography>
                         <Grid container spacing={3}>
-                            <Grid item xs={12}>
-                                <Typography variant="h6" component="h3" gutterBottom>
-                                    Breaks
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={6} sm={3}>
-                                <Field
-                                    name="preferences.breaks.frequency.interval"
-                                    as={TextField}
-                                    label="Break Frequency Interval"
-                                    type="number"
-                                    fullWidth
-                                    error={touched.preferences?.breaks?.frequency?.interval && !!errors.preferences?.breaks?.frequency?.interval}
-                                    helperText={touched.preferences?.breaks?.frequency?.interval && errors.preferences?.breaks?.frequency?.interval}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <Field as={TextField} select name="preferences.breaks.frequency.unit">
-                                                    <MenuItem value="minutes">minutes</MenuItem>
-                                                    <MenuItem value="hours">hours</MenuItem>
-                                                </Field>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={6} sm={3}>
-                                <Field
-                                    name="preferences.breaks.duration.duration"
-                                    as={TextField}
-                                    label="Break Duration"
-                                    type="number"
-                                    fullWidth
-                                    error={touched.preferences?.breaks?.duration?.duration && !!errors.preferences?.breaks?.duration?.duration}
-                                    helperText={touched.preferences?.breaks?.duration?.duration && errors.preferences?.breaks?.duration?.duration}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <Field as={TextField} select name="preferences.breaks.duration.unit">
-                                                    <MenuItem value="minutes">minutes</MenuItem>
-                                                </Field>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
                             <Grid item xs={6} sm={3}>
                                 <Field
                                     name="preferences.activity_variety"
@@ -638,53 +585,11 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     <MenuItem value="high">High</MenuItem>
                                 </Field>
                             </Grid>
-                            <Grid item xs={6} sm={3}>
-                                <Field
-                                    name="preferences.social_time.duration"
-                                    as={TextField}
-                                    label="Social Time"
-                                    type="number"
-                                    fullWidth
-                                    error={touched.preferences?.social_time?.duration && !!errors.preferences?.social_time?.duration}
-                                    helperText={touched.preferences?.social_time?.duration && errors.preferences?.social_time?.duration}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <Field as={TextField} select name="preferences.social_time.unit">
-                                                    <MenuItem value="minutes">minutes</MenuItem>
-                                                    <MenuItem value="hours">hours</MenuItem>
-                                                </Field>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={6} sm={3}>
-                                <Field
-                                    name="preferences.personal_time.duration"
-                                    as={TextField}
-                                    label="Personal Time"
-                                    type="number"
-                                    fullWidth
-                                    error={touched.preferences?.personal_time?.duration && !!errors.preferences?.personal_time?.duration}
-                                    helperText={touched.preferences?.personal_time?.duration && errors.preferences?.personal_time?.duration}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <Field as={TextField} select name="preferences.personal_time.unit">
-                                                    <MenuItem value="minutes">minutes</MenuItem>
-                                                    <MenuItem value="hours">hours</MenuItem>
-                                                </Field>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
                         </Grid>
                     </Box>
 
 
-                    <Box mt={4} textAlign="center">
+                    <Box mb={4} textAlign="center">
                         <Button disabled={isLoading} type="submit" variant="contained" color="primary" size="large">
                             Submit
                         </Button>

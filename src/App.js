@@ -13,6 +13,22 @@ function App() {
   const navigate = useNavigate();
 
   const handleFormSubmit = (values) => {
+    // append values to local storage list schedules
+    let storedValues = localStorage.getItem('weeklyScheduleForm');
+    if (storedValues === null) {
+      storedValues = [];
+    } else {
+      storedValues = JSON.parse(storedValues);
+    }
+    // check if values already exist in storedValues based in values.schedule_name
+    const index = storedValues.findIndex((item) => item.schedule_name === values.schedule_name);
+    if (index !== -1) {
+      storedValues[index] = values;
+    } else {
+      storedValues.push(values);
+    }
+    localStorage.setItem('weeklyScheduleForm', JSON.stringify(storedValues));
+
     setOutputLoading(true);
     fetch('https://ai-scheduler-backend.mavsankar.com/schedule', {
       method: 'POST',
@@ -38,28 +54,27 @@ function App() {
   };
 
   return (
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route
-          path="/create"
-          element={
-            <Container>
-              <InputForm onSubmit={handleFormSubmit} isLoading={outputLoading} />
-              {outputLoading && <div className='loader-container'> <Loader /> </div>}
-            </Container>
-          }
-        />
-        <Route
-          path="/view"
-          element={
-              <OutputScreen weeklySchedule={schedule} onFileUpload={handleFileUpload} />
-          }
-        />
-        <Route
-          path="/output"
-          element={<OutputScreen weeklySchedule={schedule} />}
-        />
-      </Routes>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route
+        path="/create"
+        element={
+          <Container>
+            {outputLoading ? <div className='loader-container'> <Loader /> </div> : <InputForm onSubmit={handleFormSubmit} isLoading={outputLoading} />}
+          </Container>
+        }
+      />
+      <Route
+        path="/view"
+        element={
+          <OutputScreen weeklySchedule={schedule} onFileUpload={handleFileUpload} />
+        }
+      />
+      <Route
+        path="/output"
+        element={<OutputScreen weeklySchedule={schedule} />}
+      />
+    </Routes>
   );
 }
 

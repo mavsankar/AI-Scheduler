@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Grid, Box, Button, Input } from '@mui/material';
 import chroma from 'chroma-js';
 import GoalLegend from '../GoalLegend/GoalLegend';
@@ -6,6 +6,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import './OutputScreen.css';
 import html2canvas from 'html2canvas';
+import LoadFile from '../Helpers/LoadFile';
 
 
 // Generate distinct colors for each goal
@@ -35,7 +36,6 @@ const getTimeSlots = (weeklySchedule) => {
 };
 
 const OutputScreen = ({ weeklySchedule }) => {
-  const activeCellRef = useRef(null);
 
   const [schedule, setSchedule] = useState(weeklySchedule);
   const [goalColors, setGoalColors] = useState({});
@@ -123,21 +123,6 @@ const OutputScreen = ({ weeklySchedule }) => {
     return { days };
   };
 
-
-  if (!schedule) {
-    return (
-      <Paper style={{ padding: '16px', marginTop: '16px' }}>
-        <Typography variant="h5">Upload Schedule File</Typography>
-        <Input
-          type="file"
-          accept=".xlsx, .xls"
-          onChange={handleFileUpload}
-          style={{ marginTop: '16px' }}
-        />
-      </Paper>
-    );
-  }
-
   const exportToExcel = (weeklySchedule, timeSlots, goalColors) => {
     const worksheetData = [];
 
@@ -150,7 +135,7 @@ const OutputScreen = ({ weeklySchedule }) => {
       const row = [time];
       weeklySchedule.days.forEach(day => {
         const activity = day.schedule.find(item => item.time === time);
-        row.push(activity ? `${activity.activity} (${activity.goal})` : "Leisure / Same as Above");
+        row.push(activity ? `${activity.activity} (${activity.goal})` : "Same as above / Leisure");
       });
       worksheetData.push(row);
     });
@@ -210,105 +195,102 @@ const OutputScreen = ({ weeklySchedule }) => {
     });
   };
 
-
+  if (!schedule) {
+    return (<Paper style={{ padding: '16px', margin: '16px' }}>
+      <LoadFile onFileUpload={handleFileUpload} />
+    </Paper>);
+  }
   // Proceed with rendering the schedule as before
-  const allGoals = schedule.days.flatMap(day => day.schedule.map(item => item.goal));
-  if (Object.keys(goalColors).length === 0) {
+  const allGoals = schedule.days?.flatMap(day => day.schedule.map(item => item.goal));
+  if (goalColors && Object.keys(goalColors).length === 0) {
     setGoalColors(generateGoalColors(allGoals));
   }
   const timeSlots = getTimeSlots(schedule);
 
   return (
-    <Paper style={{ padding: '16px', marginTop: '16px' }}>
-      <Typography variant="h4" gutterBottom>
-        Weekly Schedule
-      </Typography>
-
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => activeCellRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-        style={{ margin: '16px' }}
-      >
-        Go to Current Activity
-      </Button>
-      <br />
-
-
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => exportToExcel(schedule, timeSlots, goalColors)}
-        style={{ margin: '16px' }}
-      >
-        Download as Excel
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => exportToImage()}
-        style={{ margin: '16px' }}
-      >
-        Download as Image
-      </Button>
-
-      <div id='schedule-table'>
-        <GoalLegend goalColors={goalColors} />
-
-        <TableContainer component={Paper} >
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell><strong>Time</strong></TableCell>
-                {schedule.days.map((day, index) => (
-                  <TableCell key={index} align="center"><strong>{day.day_of_week}</strong><br />{day.date}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {timeSlots.map((time, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  <TableCell><strong>{time}</strong></TableCell>
-                  {schedule.days.map((day, colIndex) => {
-                    const currentActivity = day.schedule.find(item => item.time === time);
-
-                    // If the current slot is empty, mark it as "Leisure" or "Same as Above"
-                    const displayContent = currentActivity
-                      ? (
-                        <>
-                          <strong>{currentActivity.activity}</strong><br />
-                          <Typography variant="body2">{currentActivity.goal}</Typography>
-                        </>
-                      ) : (
-                        <Typography variant="body2" style={{ color: '#999' }}>Leisure / Same as Above</Typography>
-                      );
-                    const isActive = isActiveTimeSlot(time, day.day_of_week);
-
-                    return (
-                      <TableCell
-                        key={colIndex}
-                        align="center"
-                        style={{
-                          backgroundColor: currentActivity ? goalColors[currentActivity.goal] : '#f0f0f0',
-                          border: !isActive ? '1px solid #ddd' : undefined, // Default border for non-active cells
-                        }}
-                        className={isActive ? 'blinking' : ''} // Apply blinking border if active
-                        ref={isActive ? activeCellRef : null} // Attach the ref to the active cell
-                      >
-                        {displayContent}
-                      </TableCell>
-
-
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-
+    <>
+      <Paper style={{ padding: '16px', margin: '16px', display: 'flex', alignItems: 'center' }}>
+      <LoadFile onFileUpload={handleFileUpload} /> <div style={{margin: '10px'}}>{'<'}-- Upload Excel File To Load the Schedule</div>
     </Paper>
+      <Paper style={{ padding: '16px', marginTop: '16px' }}>
+        <Typography variant="h4" gutterBottom>
+          Weekly Schedule
+        </Typography>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => exportToExcel(schedule, timeSlots, goalColors)}
+          style={{ margin: '16px' }}
+        >
+          Download as Excel
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => exportToImage()}
+          style={{ margin: '16px' }}
+        >
+          Download as Image
+        </Button>
+
+        <div id='schedule-table'>
+          <GoalLegend goalColors={goalColors} />
+
+          <TableContainer component={Paper} >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell><strong>Time</strong></TableCell>
+                  {schedule.days.map((day, index) => (
+                    <TableCell key={index} align="center"><strong>{day.day_of_week}</strong><br />{day.date}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {timeSlots.map((time, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    <TableCell><strong>{time}</strong></TableCell>
+                    {schedule.days.map((day, colIndex) => {
+                      const currentActivity = day.schedule.find(item => item.time === time);
+
+                      // If the current slot is empty, mark it as "Leisure" or "Same as Above"
+                      const displayContent = currentActivity
+                        ? (
+                          <>
+                            <strong>{currentActivity.activity}</strong><br />
+                            <Typography variant="body2">{currentActivity.goal}</Typography>
+                          </>
+                        ) : (
+                          <Typography variant="body2" style={{ color: '#999' }}>Same as above / Leisure</Typography>
+                        );
+                      const isActive = isActiveTimeSlot(time, day.day_of_week);
+
+                      return (
+                        <TableCell
+                          key={colIndex}
+                          align="center"
+                          style={{
+                            backgroundColor: currentActivity ? goalColors[currentActivity.goal] : '#f0f0f0',
+                            border: !isActive ? '1px solid #ddd' : undefined, // Default border for non-active cells
+                          }}
+                          className={isActive ? 'blinking' : ''} // Apply blinking border if active
+                        >
+                          {displayContent}
+                        </TableCell>
+
+
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+
+      </Paper>
+    </>
   );
 };
 

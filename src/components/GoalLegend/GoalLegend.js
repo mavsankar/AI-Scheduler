@@ -17,7 +17,7 @@ const GoalLegend = ({ goalColors }) => (
                 borderRadius: '50%',
               }}
             />
-            <Typography>{goal || 'Leisure / Same as Above'}</Typography>
+            <Typography>{goal || 'Same as above / Leisure'}</Typography>
           </Box>
         </Grid>
       ))}
