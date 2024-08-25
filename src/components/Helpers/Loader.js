@@ -27,9 +27,21 @@ function Loader() {
 
     return (
         <div className="container">
-            <h3>Please Wait...</h3>
+            <div class="loader2">
+                <div class="panWrapper">
+                    <div class="pan">
+                        <div class="food"></div>
+                        <div class="panBase"></div>
+                        <div class="panHandle"></div>
+                    </div>
+                    <div class="panShadow"></div>
+                </div>
+            </div>
+
+            <h3>Cooking your Schedule...</h3>
             <div className="loader"></div>
             <h3 className='message'>{messages[currentMessage]}</h3>
+            
         </div>
     );
 }
