@@ -196,9 +196,9 @@ const OutputScreen = ({ weeklySchedule }) => {
   };
 
   if (!schedule) {
-    return (<Paper style={{ padding: '16px', margin: '16px' }}>
-      <LoadFile onFileUpload={handleFileUpload} /> <div style={{margin: '10px'}}>{'<'}-- Upload Excel File To Load the Schedule</div>
-      </Paper>);
+    return (<Paper style={{ padding: '16px', margin: '16px', display: 'flex', alignItems: 'center' }}>
+      <LoadFile onFileUpload={handleFileUpload} /> <div style={{ margin: '10px' }}>{'<'}-- Upload Excel File To Load the Schedule</div>
+    </Paper>);
   }
   // Proceed with rendering the schedule as before
   const allGoals = schedule.days?.flatMap(day => day.schedule.map(item => item.goal));
@@ -210,8 +210,8 @@ const OutputScreen = ({ weeklySchedule }) => {
   return (
     <>
       <Paper style={{ padding: '16px', margin: '16px', display: 'flex', alignItems: 'center' }}>
-      <LoadFile onFileUpload={handleFileUpload} /> <div style={{margin: '10px'}}>{'<'}-- Upload Excel File To Load the Schedule</div>
-    </Paper>
+        <LoadFile onFileUpload={handleFileUpload} /> <div style={{ margin: '10px' }}>{'<'}-- Upload Excel File To Load the Schedule</div>
+      </Paper>
       <Paper style={{ padding: '16px', marginTop: '16px' }}>
         <Typography variant="h4" gutterBottom>
           Weekly Schedule
