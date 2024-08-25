@@ -615,8 +615,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                             error={touched.model_name && !!errors.model_name}
                             helperText={touched.model_name && errors.model_name}
                         >
-                            <MenuItem value="gemini-1.5-pro">Gemini 1.5 Pro</MenuItem>
-                            <MenuItem value="gemini-1.5-flash">Gemini 1.5 Flash</MenuItem>
+                            <MenuItem value="gemini-1.5-pro">Gemini 1.5 Pro (Slow)</MenuItem>
+                            <MenuItem value="gemini-1.5-flash">Gemini 1.5 Flash (Fast)</MenuItem>
                         </Field>
 
                         <GradientButton disabled={isLoading} type="submit" variant="contained" size="large">
