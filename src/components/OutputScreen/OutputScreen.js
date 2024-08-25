@@ -197,8 +197,8 @@ const OutputScreen = ({ weeklySchedule }) => {
 
   if (!schedule) {
     return (<Paper style={{ padding: '16px', margin: '16px' }}>
-      <LoadFile onFileUpload={handleFileUpload} />
-    </Paper>);
+      <LoadFile onFileUpload={handleFileUpload} /> <div style={{margin: '10px'}}>{'<'}-- Upload Excel File To Load the Schedule</div>
+      </Paper>);
   }
   // Proceed with rendering the schedule as before
   const allGoals = schedule.days?.flatMap(day => day.schedule.map(item => item.goal));
