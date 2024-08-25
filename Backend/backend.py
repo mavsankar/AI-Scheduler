@@ -71,41 +71,38 @@ generation_config = {
   ),
   "response_mime_type": "application/json",
 }
+def create_model(model_name, generation_config):
+  model = genai.GenerativeModel(
+    model_name=model_name,
+    generation_config=generation_config,
+    # safety_settings = Adjust safety settings
+    # See https://ai.google.dev/gemini-api/docs/safety-settings
+      system_instruction= """
+  You are tasked with generating a weekly schedule JSON for a user. The schedule should be structured as a 2D table where each row represents a time slot and each column represents a day of the week. The schedule should include daily essentials, user-specific goals, tasks, and activities. Additionally, ensure the schedule adheres to the following guidelines:
 
-model = genai.GenerativeModel(
-  model_name="gemini-1.5-pro",
-  generation_config=generation_config,
-  # safety_settings = Adjust safety settings
-  # See https://ai.google.dev/gemini-api/docs/safety-settings
-    system_instruction= """
-You are tasked with generating a weekly schedule JSON for a user. The schedule should be structured as a 2D table where each row represents a time slot and each column represents a day of the week. The schedule should include daily essentials, user-specific goals, tasks, and activities. Additionally, ensure the schedule adheres to the following guidelines:
+  1. **Daily Structure**:
+    - Include essential activities like waking up, breakfast, lunch, dinner, and bedtime.
+    - Each day should have a wake-up time and bedtime that aligns with the user's preferences.
+    - Work-related activities should only be scheduled during work hours, and no non-work activities should overlap with work hours.
+    - Allow time for personal and social activities, especially during non-work hours.
 
-1. **Daily Structure**:
-   - Include essential activities like waking up, breakfast, lunch, dinner, and bedtime.
-   - Each day should have a wake-up time and bedtime that aligns with the user's preferences.
-   - Work-related activities should only be scheduled during work hours, and no non-work activities should overlap with work hours.
-   - Allow time for personal and social activities, especially during non-work hours.
+  2. **Time Slots**:
+    - Activities should be assigned specific time slots in HH:MM format.
+    - Each time slot should represent a logical duration for the activity (e.g., 30 minutes, 1 hour).
+    - Ensure that no time slots overlap within a single day.
 
-2. **Time Slots**:
-   - Activities should be assigned specific time slots in HH:MM format.
-   - Each time slot should represent a logical duration for the activity (e.g., 30 minutes, 1 hour).
-   - Ensure that no time slots overlap within a single day.
+  3. **Goals and Tasks**:
+    - Each activity should be associated with a goal (e.g., "Daily Essentials," "Workout," "Expert in Codeforces").
+    - Ensure that all user-defined tasks and goals are included and that they are appropriately spread out throughout the week.
 
-3. **Goals and Tasks**:
-   - Each activity should be associated with a goal (e.g., "Daily Essentials," "Workout," "Expert in Codeforces").
-   - Ensure that all user-defined tasks and goals are included and that they are appropriately spread out throughout the week.
-
-4. **Weekly Overview**:
-   - Each day of the week should have a schedule that includes at least one activity related to user-specific goals.
-   - The schedule should be varied to avoid repetitive tasks being scheduled back-to-back unless necessary (e.g., daily workouts).
-   - If the activity variation is set to "High", you can add creative and diverse activities to the schedule.
-    """
-)
-
-chat_session = model.start_chat(
-  history=[
-  ]
-)
+  4. **Weekly Overview**:
+    - Each day of the week should have a schedule that includes at least one activity related to user-specific goals.
+    - The schedule should be varied to avoid repetitive tasks being scheduled back-to-back unless necessary (e.g., daily workouts).
+    - If the activity variation is set to "High", you can add creative and diverse activities to the schedule.
+      """
+  )
+  
+  return model
 
 
 app = Flask(__name__)
@@ -119,6 +116,16 @@ def health_check():
 @app.route('/schedule', methods=['POST'])
 def post_endpoint():
     data = request.get_json()
+    # Get model_name from request query params, default it to "gemini-1.5-pro" if not provided
+    model_name = request.args.get('model_name')
+    
+    model_name = "gemini-1.5-pro" if model_name is None else model_name
+    
+    model = create_model(model_name, generation_config)
+    chat_session = model.start_chat(
+      history=[
+      ]
+    )
     response = chat_session.send_message(json.dumps(data))
 
     return response.text

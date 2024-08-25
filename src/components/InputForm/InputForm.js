@@ -56,6 +56,7 @@ const InputForm = ({ onSubmit, isLoading }) => {
         preferences: {
             activity_variety: 'medium'
         },
+        model_name: null,
     };
 
     const validationSchema = Yup.object({
@@ -108,6 +109,7 @@ const InputForm = ({ onSubmit, isLoading }) => {
             activity_variety: Yup.string().oneOf(['high', 'medium', 'low']),
 
         }),
+        model_name: Yup.string().required('Required'),
     });
 
     const handleScheduleChange = (event) => {
@@ -600,8 +602,23 @@ const InputForm = ({ onSubmit, isLoading }) => {
                         </StyledGrid>
                     </Box>
 
-
+                    <Typography variant="h5" component="h2" gutterBottom>
+                        Model
+                    </Typography>
                     <Box mb={4} textAlign="center">
+                        <Field
+                            as={TextField}
+                            select
+                            label="Select Model"
+                            name="model_name"
+                            fullWidth
+                            error={touched.model_name && !!errors.model_name}
+                            helperText={touched.model_name && errors.model_name}
+                        >
+                            <MenuItem value="gemini-1.5-pro">Gemini 1.5 Pro</MenuItem>
+                            <MenuItem value="gemini-1.5-flash">Gemini 1.5 Flash</MenuItem>
+                        </Field>
+
                         <GradientButton disabled={isLoading} type="submit" variant="contained" size="large">
                             Submit
                         </GradientButton>

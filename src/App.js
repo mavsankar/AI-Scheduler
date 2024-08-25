@@ -30,7 +30,7 @@ function App() {
     localStorage.setItem('weeklyScheduleForm', JSON.stringify(storedValues));
 
     setOutputLoading(true);
-    fetch('https://ai-scheduler-backend.mavsankar.com/schedule', {
+    fetch(`https://ai-scheduler-backend.mavsankar.com/schedule?model_name=${values.model_name}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
