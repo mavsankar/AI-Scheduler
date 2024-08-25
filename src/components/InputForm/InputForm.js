@@ -3,7 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { Button, TextField, MenuItem, Grid, InputAdornment, Typography, Box } from '@mui/material';
+import {
+    GradientButton,
+    StyledMenuItem,
+    StyledGrid,
+    StyledInputAdornment,
+    StyledTypography,
+    StyledBox
+} from '../Helpers/StylizedComponents';
+
 import './InputForm.css';
+
 const InputForm = ({ onSubmit, isLoading }) => {
     const [availableSchedules, setAvailableSchedules] = useState([]);
     const [selectedSchedule, setSelectedSchedule] = useState(null);
@@ -127,33 +137,35 @@ const InputForm = ({ onSubmit, isLoading }) => {
                         <Typography variant="h5" component="h2" gutterBottom>
                             Use Existing Schedule Preferences?
                         </Typography>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    select
+                        <StyledGrid container spacing={3}>
+                            <StyledGrid item xs={12}>
+
+                                <Field
+                                    as={TextField}
                                     label="Select an Existing Schedule Preference"
-                                    value={selectedSchedule ?? ''}
-                                    onChange={handleScheduleChange}
+                                    select
                                     fullWidth
+                                    onChange={handleScheduleChange}
+                                    value={selectedSchedule ?? ''}
                                 >
-                                    <MenuItem value="">
+                                    <StyledMenuItem value="">
                                         <em>None</em>
-                                    </MenuItem>
+                                    </StyledMenuItem>
                                     {availableSchedules.map((schedule) => (
-                                        <MenuItem key={schedule} value={schedule}>
+                                        <StyledMenuItem key={schedule} value={schedule}>
                                             {schedule.schedule_name}
-                                        </MenuItem>
+                                        </StyledMenuItem>
                                     ))}
-                                </TextField>
-                            </Grid>
-                        </Grid>
+                                </Field>
+                            </StyledGrid>
+                        </StyledGrid>
                     </Box>
                     <Box mb={4}>
                         <Typography variant="h5" component="h2" gutterBottom>
                             Personal Information
                         </Typography>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} mb={2}>
+                        <StyledGrid container spacing={3}>
+                            <StyledGrid item xs={12} mb={2}>
                                 <Field
                                     name="schedule_name"
                                     as={TextField}
@@ -162,10 +174,10 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.schedule_name && !!errors.schedule_name}
                                     helperText={touched.schedule_name && errors.schedule_name}
                                 />
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6}>
+                            </StyledGrid>
+                        </StyledGrid>
+                        <StyledGrid container spacing={3}>
+                            <StyledGrid item xs={12} sm={6}>
                                 <Field
                                     name="personal_information.name"
                                     as={TextField}
@@ -174,8 +186,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.personal_information?.name && !!errors.personal_information?.name}
                                     helperText={touched.personal_information?.name && errors.personal_information?.name}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            </StyledGrid>
+                            <StyledGrid item xs={12} sm={6}>
                                 <Field
                                     name="personal_information.age"
                                     as={TextField}
@@ -185,8 +197,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.personal_information?.age && !!errors.personal_information?.age}
                                     helperText={touched.personal_information?.age && errors.personal_information?.age}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            </StyledGrid>
+                            <StyledGrid item xs={12} sm={6}>
                                 <Field
                                     name="personal_information.preferred_wake_up_time"
                                     as={TextField}
@@ -196,8 +208,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.personal_information?.preferred_wake_up_time && !!errors.personal_information?.preferred_wake_up_time}
                                     helperText={touched.personal_information?.preferred_wake_up_time && errors.personal_information?.preferred_wake_up_time}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            </StyledGrid>
+                            <StyledGrid item xs={12} sm={6}>
                                 <Field
                                     name="personal_information.preferred_bedtime"
                                     as={TextField}
@@ -207,8 +219,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.personal_information?.preferred_bedtime && !!errors.personal_information?.preferred_bedtime}
                                     helperText={touched.personal_information?.preferred_bedtime && errors.personal_information?.preferred_bedtime}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            </StyledGrid>
+                            <StyledGrid item xs={12} sm={6}>
                                 <Field
                                     name="personal_information.current_lifestyle_habits.exercise"
                                     as={TextField}
@@ -217,8 +229,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.personal_information?.current_lifestyle_habits?.exercise && !!errors.personal_information?.current_lifestyle_habits?.exercise}
                                     helperText={touched.personal_information?.current_lifestyle_habits?.exercise && errors.personal_information?.current_lifestyle_habits?.exercise}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            </StyledGrid>
+                            <StyledGrid item xs={12} sm={6}>
                                 <Field
                                     name="personal_information.current_lifestyle_habits.diet"
                                     as={TextField}
@@ -227,8 +239,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.personal_information?.current_lifestyle_habits?.diet && !!errors.personal_information?.current_lifestyle_habits?.diet}
                                     helperText={touched.personal_information?.current_lifestyle_habits?.diet && errors.personal_information?.current_lifestyle_habits?.diet}
                                 />
-                            </Grid>
-                            <Grid item xs={12}>
+                            </StyledGrid>
+                            <StyledGrid item xs={12}>
                                 <Field
                                     name="personal_information.current_lifestyle_habits.sleep"
                                     as={TextField}
@@ -237,8 +249,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.personal_information?.current_lifestyle_habits?.sleep && !!errors.personal_information?.current_lifestyle_habits?.sleep}
                                     helperText={touched.personal_information?.current_lifestyle_habits?.sleep && errors.personal_information?.current_lifestyle_habits?.sleep}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            </StyledGrid>
+                            <StyledGrid item xs={12} sm={6}>
                                 <Field
                                     name="personal_information.work_hours.start_time"
                                     as={TextField}
@@ -248,8 +260,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.personal_information?.work_hours?.start_time && !!errors.personal_information?.work_hours?.start_time}
                                     helperText={touched.personal_information?.work_hours?.start_time && errors.personal_information?.work_hours?.start_time}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            </StyledGrid>
+                            <StyledGrid item xs={12} sm={6}>
                                 <Field
                                     name="personal_information.work_hours.end_time"
                                     as={TextField}
@@ -259,8 +271,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.personal_information?.work_hours?.end_time && !!errors.personal_information?.work_hours?.end_time}
                                     helperText={touched.personal_information?.work_hours?.end_time && errors.personal_information?.work_hours?.end_time}
                                 />
-                            </Grid>
-                        </Grid>
+                            </StyledGrid>
+                        </StyledGrid>
                     </Box>
 
                     <Box mb={4}>
@@ -273,8 +285,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                 <Box>
                                     {arrayHelpers.form.values.goals.map((goal, index) => (
                                         <Box key={index} mb={3} p={2} border={1} borderColor="grey.300" borderRadius={4}>
-                                            <Grid container spacing={3}>
-                                                <Grid item xs={12}>
+                                            <StyledGrid container spacing={3}>
+                                                <StyledGrid item xs={12}>
                                                     <Field
                                                         name={`goals.${index}.goal_name`}
                                                         as={TextField}
@@ -283,8 +295,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         error={touched.goals?.[index]?.goal_name && !!errors.goals?.[index]?.goal_name}
                                                         helperText={touched.goals?.[index]?.goal_name && errors.goals?.[index]?.goal_name}
                                                     />
-                                                </Grid>
-                                                <Grid item xs={12}>
+                                                </StyledGrid>
+                                                <StyledGrid item xs={12}>
                                                     <Field
                                                         name={`goals.${index}.goal_description`}
                                                         as={TextField}
@@ -293,8 +305,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         error={touched.goals?.[index]?.goal_description && !!errors.goals?.[index]?.goal_description}
                                                         helperText={touched.goals?.[index]?.goal_description && errors.goals?.[index]?.goal_description}
                                                     />
-                                                </Grid>
-                                                <Grid item xs={12} sm={6}>
+                                                </StyledGrid>
+                                                <StyledGrid item xs={12} sm={6}>
                                                     <Field
                                                         name={`goals.${index}.goal_type`}
                                                         as={TextField}
@@ -303,8 +315,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         error={touched.goals?.[index]?.goal_type && !!errors.goals?.[index]?.goal_type}
                                                         helperText={touched.goals?.[index]?.goal_type && errors.goals?.[index]?.goal_type}
                                                     />
-                                                </Grid>
-                                                <Grid item xs={12} sm={6}>
+                                                </StyledGrid>
+                                                <StyledGrid item xs={12} sm={6}>
                                                     <Field
                                                         name={`goals.${index}.deadline`}
                                                         as={TextField}
@@ -315,8 +327,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         error={touched.goals?.[index]?.deadline && !!errors.goals?.[index]?.deadline}
                                                         helperText={touched.goals?.[index]?.deadline && errors.goals?.[index]?.deadline}
                                                     />
-                                                </Grid>
-                                                <Grid item xs={12} sm={6}>
+                                                </StyledGrid>
+                                                <StyledGrid item xs={12} sm={6}>
                                                     <Field
                                                         name={`goals.${index}.priority_level`}
                                                         as={TextField}
@@ -326,12 +338,12 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         error={touched.goals?.[index]?.priority_level && !!errors.goals?.[index]?.priority_level}
                                                         helperText={touched.goals?.[index]?.priority_level && errors.goals?.[index]?.priority_level}
                                                     >
-                                                        <MenuItem value="high">High</MenuItem>
-                                                        <MenuItem value="medium">Medium</MenuItem>
-                                                        <MenuItem value="low">Low</MenuItem>
+                                                        <StyledMenuItem value="high">High</StyledMenuItem>
+                                                        <StyledMenuItem value="medium">Medium</StyledMenuItem>
+                                                        <StyledMenuItem value="low">Low</StyledMenuItem>
                                                     </Field>
-                                                </Grid>
-                                            </Grid>
+                                                </StyledGrid>
+                                            </StyledGrid>
                                             <Box mt={2}>
                                                 <Button onClick={() => arrayHelpers.remove(index)} color="secondary" variant="outlined">
                                                     Remove Goal
@@ -357,8 +369,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                 <Box>
                                     {arrayHelpers.form.values.tasks.map((task, index) => (
                                         <Box key={index} mb={3} p={2} border={1} borderColor="grey.300" borderRadius={4}>
-                                            <Grid container spacing={3}>
-                                                <Grid item xs={12}>
+                                            <StyledGrid container spacing={3}>
+                                                <StyledGrid item xs={12}>
                                                     <Field
                                                         name={`tasks.${index}.goal_name`}
                                                         as={TextField}
@@ -367,8 +379,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         error={touched.tasks?.[index]?.goal_name && !!errors.tasks?.[index]?.goal_name}
                                                         helperText={touched.tasks?.[index]?.goal_name && errors.tasks?.[index]?.goal_name}
                                                     />
-                                                </Grid>
-                                                <Grid item xs={12}>
+                                                </StyledGrid>
+                                                <StyledGrid item xs={12}>
                                                     <Field
                                                         name={`tasks.${index}.task_name`}
                                                         as={TextField}
@@ -377,8 +389,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         error={touched.tasks?.[index]?.task_name && !!errors.tasks?.[index]?.task_name}
                                                         helperText={touched.tasks?.[index]?.task_name && errors.tasks?.[index]?.task_name}
                                                     />
-                                                </Grid>
-                                                <Grid item xs={12}>
+                                                </StyledGrid>
+                                                <StyledGrid item xs={12}>
                                                     <Field
                                                         name={`tasks.${index}.task_description`}
                                                         as={TextField}
@@ -387,8 +399,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         error={touched.tasks?.[index]?.task_description && !!errors.tasks?.[index]?.task_description}
                                                         helperText={touched.tasks?.[index]?.task_description && errors.tasks?.[index]?.task_description}
                                                     />
-                                                </Grid>
-                                                <Grid item xs={12} sm={6}>
+                                                </StyledGrid>
+                                                <StyledGrid item xs={12} sm={6}>
                                                     <Field
                                                         name={`tasks.${index}.task_frequency`}
                                                         as={TextField}
@@ -398,12 +410,12 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         error={touched.tasks?.[index]?.task_frequency && !!errors.tasks?.[index]?.task_frequency}
                                                         helperText={touched.tasks?.[index]?.task_frequency && errors.tasks?.[index]?.task_frequency}
                                                     >
-                                                        <MenuItem value="daily">Daily</MenuItem>
-                                                        <MenuItem value="weekly">Weekly</MenuItem>
-                                                        <MenuItem value="monthly">Monthly</MenuItem>
+                                                        <StyledMenuItem value="daily">Daily</StyledMenuItem>
+                                                        <StyledMenuItem value="weekly">Weekly</StyledMenuItem>
+                                                        <StyledMenuItem value="monthly">Monthly</StyledMenuItem>
                                                     </Field>
-                                                </Grid>
-                                                <Grid item xs={12} sm={6}>
+                                                </StyledGrid>
+                                                <StyledGrid item xs={12} sm={6}>
                                                     <Field
                                                         name={`tasks.${index}.estimated_duration.duration`}
                                                         as={TextField}
@@ -414,16 +426,16 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                         helperText={touched.tasks?.[index]?.estimated_duration?.duration && errors.tasks?.[index]?.estimated_duration?.duration}
                                                         InputProps={{
                                                             endAdornment: (
-                                                                <InputAdornment position="end">
+                                                                <StyledInputAdornment position="end">
                                                                     <Field as={TextField} select name={`tasks.${index}.estimated_duration.unit`}>
-                                                                        <MenuItem value="minutes">minutes</MenuItem>
+                                                                        <StyledMenuItem value="minutes">minutes</StyledMenuItem>
                                                                     </Field>
-                                                                </InputAdornment>
+                                                                </StyledInputAdornment>
                                                             ),
                                                         }}
                                                     />
-                                                </Grid>
-                                            </Grid>
+                                                </StyledGrid>
+                                            </StyledGrid>
                                             <Box mt={2}>
                                                 <Button onClick={() => arrayHelpers.remove(index)} color="secondary" variant="outlined">
                                                     Remove Task
@@ -453,8 +465,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     <Box>
                                         {arrayHelpers.form.values.constraints.unavailable_time_blocks.map((block, index) => (
                                             <Box key={index} mb={2} p={2} border={1} borderColor="grey.300" borderRadius={4}>
-                                                <Grid container spacing={3}>
-                                                    <Grid item xs={12} sm={4}>
+                                                <StyledGrid container spacing={3}>
+                                                    <StyledGrid item xs={12} sm={4}>
                                                         <Field
                                                             name={`constraints.unavailable_time_blocks.${index}.day`}
                                                             as={TextField}
@@ -464,16 +476,16 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                             error={touched.constraints?.unavailable_time_blocks?.[index]?.day && !!errors.constraints?.unavailable_time_blocks?.[index]?.day}
                                                             helperText={touched.constraints?.unavailable_time_blocks?.[index]?.day && errors.constraints?.unavailable_time_blocks?.[index]?.day}
                                                         >
-                                                            <MenuItem value="Monday">Monday</MenuItem>
-                                                            <MenuItem value="Tuesday">Tuesday</MenuItem>
-                                                            <MenuItem value="Wednesday">Wednesday</MenuItem>
-                                                            <MenuItem value="Thursday">Thursday</MenuItem>
-                                                            <MenuItem value="Friday">Friday</MenuItem>
-                                                            <MenuItem value="Saturday">Saturday</MenuItem>
-                                                            <MenuItem value="Sunday">Sunday</MenuItem>
+                                                            <StyledMenuItem value="Monday">Monday</StyledMenuItem>
+                                                            <StyledMenuItem value="Tuesday">Tuesday</StyledMenuItem>
+                                                            <StyledMenuItem value="Wednesday">Wednesday</StyledMenuItem>
+                                                            <StyledMenuItem value="Thursday">Thursday</StyledMenuItem>
+                                                            <StyledMenuItem value="Friday">Friday</StyledMenuItem>
+                                                            <StyledMenuItem value="Saturday">Saturday</StyledMenuItem>
+                                                            <StyledMenuItem value="Sunday">Sunday</StyledMenuItem>
                                                         </Field>
-                                                    </Grid>
-                                                    <Grid item xs={12} sm={4}>
+                                                    </StyledGrid>
+                                                    <StyledGrid item xs={12} sm={4}>
                                                         <Field
                                                             name={`constraints.unavailable_time_blocks.${index}.start_time`}
                                                             as={TextField}
@@ -483,8 +495,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                             error={touched.constraints?.unavailable_time_blocks?.[index]?.start_time && !!errors.constraints?.unavailable_time_blocks?.[index]?.start_time}
                                                             helperText={touched.constraints?.unavailable_time_blocks?.[index]?.start_time && errors.constraints?.unavailable_time_blocks?.[index]?.start_time}
                                                         />
-                                                    </Grid>
-                                                    <Grid item xs={12} sm={4}>
+                                                    </StyledGrid>
+                                                    <StyledGrid item xs={12} sm={4}>
                                                         <Field
                                                             name={`constraints.unavailable_time_blocks.${index}.end_time`}
                                                             as={TextField}
@@ -494,8 +506,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                                             error={touched.constraints?.unavailable_time_blocks?.[index]?.end_time && !!errors.constraints?.unavailable_time_blocks?.[index]?.end_time}
                                                             helperText={touched.constraints?.unavailable_time_blocks?.[index]?.end_time && errors.constraints?.unavailable_time_blocks?.[index]?.end_time}
                                                         />
-                                                    </Grid>
-                                                </Grid>
+                                                    </StyledGrid>
+                                                </StyledGrid>
                                                 <Box mt={2}>
                                                     <Button onClick={() => arrayHelpers.remove(index)} color="secondary" variant="outlined">
                                                         Remove Time Block
@@ -515,8 +527,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                             <Typography variant="h6" component="h3" gutterBottom>
                                 Daily Energy Levels
                             </Typography>
-                            <Grid container spacing={3}>
-                                <Grid item xs={12} sm={4}>
+                            <StyledGrid container spacing={3}>
+                                <StyledGrid item xs={12} sm={4}>
                                     <Field
                                         name="constraints.daily_energy_levels.morning"
                                         as={TextField}
@@ -526,12 +538,12 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                         error={touched.constraints?.daily_energy_levels?.morning && !!errors.constraints?.daily_energy_levels?.morning}
                                         helperText={touched.constraints?.daily_energy_levels?.morning && errors.constraints?.daily_energy_levels?.morning}
                                     >
-                                        <MenuItem value="low">Low</MenuItem>
-                                        <MenuItem value="medium">Medium</MenuItem>
-                                        <MenuItem value="high">High</MenuItem>
+                                        <StyledMenuItem value="low">Low</StyledMenuItem>
+                                        <StyledMenuItem value="medium">Medium</StyledMenuItem>
+                                        <StyledMenuItem value="high">High</StyledMenuItem>
                                     </Field>
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
+                                </StyledGrid>
+                                <StyledGrid item xs={12} sm={4}>
                                     <Field
                                         name="constraints.daily_energy_levels.afternoon"
                                         as={TextField}
@@ -541,12 +553,12 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                         error={touched.constraints?.daily_energy_levels?.afternoon && !!errors.constraints?.daily_energy_levels?.afternoon}
                                         helperText={touched.constraints?.daily_energy_levels?.afternoon && errors.constraints?.daily_energy_levels?.afternoon}
                                     >
-                                        <MenuItem value="low">Low</MenuItem>
-                                        <MenuItem value="medium">Medium</MenuItem>
-                                        <MenuItem value="high">High</MenuItem>
+                                        <StyledMenuItem value="low">Low</StyledMenuItem>
+                                        <StyledMenuItem value="medium">Medium</StyledMenuItem>
+                                        <StyledMenuItem value="high">High</StyledMenuItem>
                                     </Field>
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
+                                </StyledGrid>
+                                <StyledGrid item xs={12} sm={4}>
                                     <Field
                                         name="constraints.daily_energy_levels.evening"
                                         as={TextField}
@@ -556,12 +568,12 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                         error={touched.constraints?.daily_energy_levels?.evening && !!errors.constraints?.daily_energy_levels?.evening}
                                         helperText={touched.constraints?.daily_energy_levels?.evening && errors.constraints?.daily_energy_levels?.evening}
                                     >
-                                        <MenuItem value="low">Low</MenuItem>
-                                        <MenuItem value="medium">Medium</MenuItem>
-                                        <MenuItem value="high">High</MenuItem>
+                                        <StyledMenuItem value="low">Low</StyledMenuItem>
+                                        <StyledMenuItem value="medium">Medium</StyledMenuItem>
+                                        <StyledMenuItem value="high">High</StyledMenuItem>
                                     </Field>
-                                </Grid>
-                            </Grid>
+                                </StyledGrid>
+                            </StyledGrid>
                         </Box>
                     </Box>
 
@@ -569,8 +581,8 @@ const InputForm = ({ onSubmit, isLoading }) => {
                         <Typography variant="h5" component="h2" gutterBottom>
                             Preferences
                         </Typography>
-                        <Grid container spacing={3}>
-                            <Grid item xs={6} sm={3}>
+                        <StyledGrid container spacing={3}>
+                            <StyledGrid item xs={6} sm={3}>
                                 <Field
                                     name="preferences.activity_variety"
                                     as={TextField}
@@ -580,23 +592,25 @@ const InputForm = ({ onSubmit, isLoading }) => {
                                     error={touched.preferences?.activity_variety && !!errors.preferences?.activity_variety}
                                     helperText={touched.preferences?.activity_variety && errors.preferences?.activity_variety}
                                 >
-                                    <MenuItem value="low">Low</MenuItem>
-                                    <MenuItem value="medium">Medium</MenuItem>
-                                    <MenuItem value="high">High</MenuItem>
+                                    <StyledMenuItem value="low">Low</StyledMenuItem>
+                                    <StyledMenuItem value="medium">Medium</StyledMenuItem>
+                                    <StyledMenuItem value="high">High</StyledMenuItem>
                                 </Field>
-                            </Grid>
-                        </Grid>
+                            </StyledGrid>
+                        </StyledGrid>
                     </Box>
 
 
                     <Box mb={4} textAlign="center">
-                        <Button disabled={isLoading} type="submit" variant="contained" color="primary" size="large">
+                        <GradientButton disabled={isLoading} type="submit" variant="contained" size="large">
                             Submit
-                        </Button>
+                        </GradientButton>
                     </Box>
+
                 </Form>
-            )}
-        </Formik>
+            )
+            }
+        </Formik >
     );
 };
 

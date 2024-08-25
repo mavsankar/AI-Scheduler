@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Grid, Box, Button, Input } from '@mui/material';
 import chroma from 'chroma-js';
 import GoalLegend from '../GoalLegend/GoalLegend';
