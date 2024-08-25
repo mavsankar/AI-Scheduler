@@ -44,7 +44,7 @@ function App() {
       })
       .catch((error) => {
         setOutputLoading(false);
-        console.error('Error:', error);
+        alert('Error Generating the Schedule. Please try again later.');
       });
   };
 
