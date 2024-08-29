@@ -114,7 +114,7 @@ def health_check():
     return jsonify({"status": "healthy"})
 
 @app.route('/schedule', methods=['POST'])
-def post_endpoint():
+async def post_endpoint():
     data = request.get_json()
     # Get model_name from request query params, default it to "gemini-1.5-pro" if not provided
     model_name = request.args.get('model_name')
@@ -126,7 +126,8 @@ def post_endpoint():
       history=[
       ]
     )
-    response = chat_session.send_message(json.dumps(data))
+    response = await chat_session.send_message_async(json.dumps(data))
+    chat_session.end_chat()
 
     return response.text
 
